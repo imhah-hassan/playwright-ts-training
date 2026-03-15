@@ -1,21 +1,15 @@
 import { test, expect } from '@playwright/test';
 
-test('Should create an employee and logout', async ({ page }) => {
-    // Login
-    await page.goto('/web/index.php/auth/login');
-    console.log('Viewport:', await page.viewportSize());
-    await page.locator('input[name="username"]').fill('Admin');
-    await page.locator('input[name="password"]').fill('admin123');
-    await page.locator('button[type="submit"]').click();
+const employee = {
+    firstName: "Playwright",
+    lastName: "Training",
+    employeeId: Math.floor(Math.random() * 1000000 + 1000000).toString(),
+    dateOfBirth: "1995-02-15",
+    empId: ""
+};
 
+test('Should create employee and add details ', async ({ page }) => {
     // Create employee
-    const employee = {
-        firstName: "Playwright",
-        lastName: "Training",
-        employeeId: Math.floor(Math.random() * 1000000 + 1000000).toString(),
-        dateOfBirth: "1995-02-15",
-        empId: ""
-    };
     await page.goto('/web/index.php/dashboard/index');
     await expect(page.locator("header h6")).toHaveText(/Dashboard/);
     // Add employee
@@ -40,6 +34,8 @@ test('Should create an employee and logout', async ({ page }) => {
 
     await page.locator("button[type='submit']").first().click();
 
+});
+test('Sould search for employee by last name and add contact details ', async ({ page }) => {
     // Search for employee by last name and view details
     await page.goto('/web/index.php/pim/viewPimModule');
     await page.locator("xpath=//label[text()='Employee Name']/../..//input").fill(employee.lastName);
@@ -79,6 +75,8 @@ test('Should create an employee and logout', async ({ page }) => {
 
     await page.locator("button[type='submit']").first().click();
 
+});
+test('Should search for employee by id and delete ', async ({ page }) => {
     // Search for employee by id and delete
     await page.goto('/web/index.php/pim/viewPimModule');
     await page.locator("xpath=//label[text()='Employee Id']/../..//input").fill(employee.employeeId);
@@ -88,10 +86,11 @@ test('Should create an employee and logout', async ({ page }) => {
     await page.getByText("Yes, Delete").click();
     expect(await page.locator("div.orangehrm-employee-list div[role='row']")).toHaveCount(0);
 
+});
+
+test('Should logout ', async ({ page }) => {
     // Logout
     await page.locator('li.oxd-userdropdown').click();
     await page.locator("a[href*='/auth/logout']").click();
     expect(await page.url()).toContain('/auth/login');
-
-
 });
