@@ -10,53 +10,5 @@
     "lastName": "Moen",
     "employeeId": "25746",
     "dateOfBirth": "1999-05-31"
-  },
-  {
-    "firstName": "Jayson",
-    "lastName": "Swift",
-    "employeeId": "60616",
-    "dateOfBirth": "1999-05-26"
-  },
-  {
-    "firstName": "Carli",
-    "lastName": "Schaden",
-    "employeeId": "21000",
-    "dateOfBirth": "1946-08-23"
-  },
-  {
-    "firstName": "Ernestina",
-    "lastName": "Kuvalis",
-    "employeeId": "16651",
-    "dateOfBirth": "2003-11-24"
-  },
-  {
-    "firstName": "Ozella",
-    "lastName": "Flatley",
-    "employeeId": "64889",
-    "dateOfBirth": "2000-03-23"
-  },
-  {
-    "firstName": "Josefina",
-    "lastName": "Goyette",
-    "employeeId": "22662",
-    "dateOfBirth": "1967-11-26"
-  },
-  {
-    "firstName": "Debbie",
-    "lastName": "Fahey",
-    "employeeId": "07921",
-    "dateOfBirth": "1988-05-28"
-  },
-  {
-    "firstName": "Ruby",
-    "lastName": "Jacobson",
-    "employeeId": "45405",
-    "dateOfBirth": "1964-05-24"
-  },
-  {
-    "firstName": "Cristian",
-    "lastName": "Toy",
-    "employeeId": "43273",
-    "dateOfBirth": "1980-02-18"
   }
 ]

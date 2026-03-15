@@ -1,6 +1,10 @@
-import { test, expect, Page } from '@playwright/test';
+import { test, expect } from '@playwright/test';
 import employees from '../data/employees.json';
 
+import { DashboardPage } from './pages/dashboard.page';
+import { EmployeeListPage } from './pages/employee-list.page';
+import { AddEmployeePage } from './pages/add-employee.page';
+import { EmployeeDetailsPage } from './pages/employee-details.page';
 
 test.describe.configure({ mode: 'serial' });  // Stop on first failure
 
@@ -9,28 +13,25 @@ test.use({ storageState: '.auth/storageState.json' });
 for (const employee of employees) {
 
     test(`Should add employee ${employee.firstName} ${employee.lastName} and save details`, async ({ page }) => {
-        await page.goto('/web/index.php/dashboard/index');
-        await expect(page.locator("header h6")).toHaveText(/Dashboard/);
+        const dashboardPage = new DashboardPage(page);
+        const employeeListPage = new EmployeeListPage(page);
+        const addEmployeePage = new AddEmployeePage(page);
+        const employeeDetailsPage = new EmployeeDetailsPage(page);
+
+        await dashboardPage.goto();
+        await dashboardPage.expectDashboardHeader();
+
         // Add employee
-        await page.goto('/web/index.php/pim/viewEmployeeList');
+        await employeeListPage.goto();
         // await page.pause(); // visually confirm you're logged in
 
-        await page.locator("button[type='button'] i.bi-plus").click({ force: true });
-        await page.locator("input[name='firstName']").fill(employee.firstName);
-        await page.locator("input[name='lastName']").fill(employee.lastName);
-        await page.locator("xpath=//label[text()='Employee Id']/../..//input").fill(employee.employeeId);
-        await page.locator('button[type="submit"]').click();
+        await employeeListPage.clickAddEmployee();
+        await addEmployeePage.fillEmployeeDetails(employee.firstName, employee.lastName, employee.employeeId);
+        await addEmployeePage.submit();
 
         // Add personal details
-        await page.locator("xpath=//label[text()='Nationality']/../..//i").click();
-        await page.getByRole('option', { name: 'French' }).click();
+        await employeeDetailsPage.fillPersonalDetails('French', 'Single', employee.dateOfBirth, 'Male');
 
-        await page.locator("xpath=//label[text()='Marital Status']/../..//i").click();
-        await page.getByRole('option', { name: 'Single' }).click();
-
-        await page.locator("xpath=//label[text()='Date of Birth']/../..//input").fill(employee.dateOfBirth);
-        await page.locator("xpath=//label[text()='Male']").click({ force: true });
-
-        await page.locator("button[type='submit']").first().click();
+        await employeeDetailsPage.savePersonalDetails();
     });
-};
+}

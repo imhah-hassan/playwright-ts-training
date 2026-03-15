@@ -1,41 +1,46 @@
-import { test, expect, Page } from '@playwright/test';
+import { test, expect } from '@playwright/test';
+import { LoginPage } from './pages/login.page';
+import { DashboardPage } from './pages/dashboard.page';
+
 // Reset storage state for this file to avoid being authenticated
 test.use({ storageState: { cookies: [], origins: [] } });
+
 test('Should login and logout with valid credentials', async ({ page }) => {
+    const loginPage = new LoginPage(page);
+    const dashboardPage = new DashboardPage(page);
+
     // Login 
-    await page.goto('/web/index.php/auth/login');
+    await loginPage.goto();
     console.log('Viewport:', await page.viewportSize());
-    await page.locator('input[name="username"]').fill('Admin');
-    await page.locator('input[name="password"]').fill('admin123');
-    await page.locator('button[type="submit"]').click();
+    await loginPage.login('Admin', 'admin123');
 
     // Verify login
-    await expect(page.locator("nav[role='navigation'] a[href*='pim/viewPimModule']")).toBeVisible();
+    await dashboardPage.expectPimModuleVisible();
 
-    await page.locator('li.oxd-userdropdown').click();
-    await page.locator("a[href*='/auth/logout']").click();
-    expect(await page.url()).toContain('/auth/login');
-
+    await dashboardPage.logout();
+    await loginPage.expectLoginUrl();
 });
 
 test('Should fail login with invalid password', async ({ page }) => {
+    const loginPage = new LoginPage(page);
+
     // Login 
-    await page.goto('/web/index.php/auth/login');
+    await loginPage.goto();
     console.log('Viewport:', await page.viewportSize());
-    await page.locator('input[name="username"]').fill('Admin');
-    await page.locator('input[name="password"]').fill('123654');
-    await page.locator('button[type="submit"]').click();
-    expect(await page.locator("div.oxd-alert p.oxd-alert-content-text")).toHaveText('Invalid credentials');
+    await loginPage.login('Admin', '123654');
+
+    await loginPage.expectInvalidCredentials();
     await page.pause();
 });
 
 test('Should fail login with unkown login', async ({ page }) => {
+    const loginPage = new LoginPage(page);
+
     // Login 
-    await page.goto('/web/index.php/auth/login');
+    await loginPage.goto();
     console.log('Viewport:', await page.viewportSize());
-    await page.locator('input[name="username"]').fill('unkown');
-    await page.locator('input[name="password"]').fill('admin123');
-    await page.locator('button[type="submit"]').click();
-    expect(await page.locator("div.oxd-alert p.oxd-alert-content-text")).toHaveText('Invalid credentials');
+    await loginPage.login('unkown', 'admin123');
+
+    await loginPage.expectInvalidCredentials();
     await page.pause();
 });
