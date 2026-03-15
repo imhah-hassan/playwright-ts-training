@@ -30,3 +30,5 @@ to show report
 And check out the following files:
   - .\tests\example.spec.ts - Example end-to-end test
   - .\playwright.config.ts - Playwright Test configuration
+
+npx playwright test tests\employee.spec.ts 
