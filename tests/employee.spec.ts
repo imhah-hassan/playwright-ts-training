@@ -1,11 +1,16 @@
 import { test, expect } from '@playwright/test';
+import { faker } from '@faker-js/faker';
+
+function formatDateToYYYYDDMM(dateStr: string): string {
+    const [year, month, day] = dateStr.split('-');
+    return `${year}-${day}-${month}`;
+}
 
 const employee = {
-    firstName: "Playwright",
-    lastName: "Training",
-    employeeId: Math.floor(Math.random() * 1000000 + 1000000).toString(),
-    dateOfBirth: "1995-02-15",
-    dateOfBirthUS: "1995-15-02",
+    firstName: faker.person.firstName(),
+    lastName: faker.person.lastName(),
+    employeeId: faker.string.numeric(6),
+    dateOfBirth: faker.date.birthdate({ mode: 'age', min: 18, max: 65 }).toISOString().split('T')[0],
     empId: ""
 };
 
@@ -37,7 +42,8 @@ test('Should create employee and add details ', async ({ page }) => {
     await page.locator("xpath=//label[text()='Male']").click({ force: true });
 
     await page.locator("button[type='submit']").first().click();
-    await expect(page.locator("xpath=//label[text()='Date of Birth']/../..//input")).toHaveValue(employee.dateOfBirthUS);
+    await expect(page.locator("xpath=//label[text()='Date of Birth']/../..//input"))
+        .toHaveValue(formatDateToYYYYDDMM(employee.dateOfBirth));
 
 });
 test('Sould search for employee by last name and add contact details ', async ({ page }) => {
@@ -117,6 +123,7 @@ test('Should search for employee by id and delete ', async ({ page }) => {
 
 test('Should logout ', async ({ page }) => {
     // Logout
+    await page.goto('/web/index.php/dashboard/index');
     await page.locator('li.oxd-userdropdown').click();
     await page.locator("a[href*='/auth/logout']").click();
     expect(await page.url()).toContain('/auth/login');
