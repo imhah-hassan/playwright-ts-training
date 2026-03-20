@@ -12,7 +12,7 @@ test('Should login and logout with valid credentials', async ({ page }) => {
     // Login 
     await loginPage.goto();
     console.log('Viewport:', await page.viewportSize());
-    await loginPage.login('Admin', 'admin123');
+    await loginPage.login('Admin', 'Orangehrm$2026');
 
     // Verify login
     await dashboardPage.expectPimModuleVisible();

@@ -32,3 +32,9 @@ And check out the following files:
   - .\playwright.config.ts - Playwright Test configuration
 
 npx playwright test tests\employee.spec.ts 
+
+Run slow: SLOWMO=250 npx playwright test --headed (perfect for debugging OrangeHRM flows)
+
+
+npm install --save-dev @faker-js/faker
+npm install --save-dev @types/faker  # TypeScript types

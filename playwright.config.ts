@@ -14,7 +14,7 @@ import { defineConfig, devices } from '@playwright/test';
 export default defineConfig({
   testDir: './tests',
   /* Run tests in files in parallel */
-  fullyParallel: false,
+  fullyParallel: false,  // Files run sequentially
   /* Fail the build on CI if you accidentally left test.only in the source code. */
   forbidOnly: !!process.env.CI,
   /* Retry on CI only */
@@ -29,16 +29,18 @@ export default defineConfig({
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
     /* Base URL to use in actions like `await page.goto('')`. */
-    baseURL: 'https://opensource-demo.orangehrmlive.com',
-    launchOptions: {
-      slowMo: 1000,  // 500ms delay between actions
-    },
+    // baseURL: 'https://opensource-demo.orangehrmlive.com',
+    baseURL: 'http://52.47.130.191:8200',
 
+    launchOptions: {
+      slowMo: 10,  // 10ms delay between actions
+    },
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry',
     headless: false,
-    viewport: { width: 1280, height: 720 },
     ignoreHTTPSErrors: true,
+    actionTimeout: 10 * 1000,
+    navigationTimeout: 10 * 1000,
   },
 
   /* Configure projects for major browsers */
@@ -47,12 +49,11 @@ export default defineConfig({
       name: 'setup',
       testMatch: /.*\.setup\.ts/,  // matches auth.setup.ts
     },
-
     {
       name: 'chromium',
       use: {
         ...devices['Desktop Chrome'],
-        viewport: { width: 1600, height: 900 },
+        viewport: { width: 1800, height: 1200 },
         storageState: '.auth/storageState.json',
       },
       dependencies: ['setup'],
@@ -88,7 +89,6 @@ export default defineConfig({
     //   use: { ...devices['Desktop Chrome'], channel: 'chrome' },
     // },
   ],
-
   /* Run your local dev server before starting the tests */
   // webServer: {
   //   command: 'npm run start',
